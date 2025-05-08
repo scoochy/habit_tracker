@@ -12,23 +12,37 @@ React Native mobile frontend
 
 RESTful API with Swagger docs
 
-⚙️ Tech Stack
-Backend: 	Python, FastAPI, SQLAlchemy, SQLite 
-Frontend: 	React Native, Expo
-API Docs:	Swagger (built-in with FastAPI)
-Testing:	Pytest (planned)
+⚙️ Tech Stack  
+
+Backend: 	Python, FastAPI, SQLAlchemy, SQLite  
+Frontend: 	React Native, Expo  
+API Docs:	Swagger (built-in with FastAPI)  
+Testing:	Pytest (planned)  
+
 
 ## 🚀 Setup Instructions
 
 
 Follow the steps below to set up the project environment.
 
-### 1. Create and Activate a Virtual Environment
+### 1. Clone repository
 
-#### Bash (Linux/macOS/Git Bash)
+```
+git clone https://github.com/scoochy/habit_tracker.git
+cd habit_tracker
+```
+
+### 2. Create and Activate a Virtual Environment
+
 
 ```bash
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
+```
+
+### 3. Run the API server
+
+```bash
+uvicorn main:app --reload
 ```
