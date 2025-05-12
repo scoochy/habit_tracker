@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Habits Complete</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: white;
+      font-family: sans-serif;
+      overflow: hidden;
+      height: 100vh;
+    }
+
+    h1 {
+      text-align: center;
+      margin-top: 1.5em;
+      font-size: 1.8em;
+    }
+
+    .outer-orbit {
+      position: absolute;
+      width: 100vw;
+      height: 100vh;
+      animation: move-around 20s linear infinite;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .yellow-circle {
+      background: #fbe24c;
+      width: 450px;
+      height: 450px;
+      border-radius: 50%;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .orange-orbit {
+      width: 100%;
+      height: 100%;
+      animation: orbit-inner 8s linear infinite;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    .orange-circle {
+      background: #ed8936;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .red-orbit {
+      width: 100%;
+      height: 100%;
+      animation: orbit-inner 4s linear infinite reverse;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    .red-circle {
+      background: #c53030;
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    /* Animations */
+    @keyframes move-around {
+      0%   { transform: translate(0%, 0%); }
+      25%  { transform: translate(20%, 10%); }
+      50%  { transform: translate(0%, 20%); }
+      75%  { transform: translate(-20%, 10%); }
+      100% { transform: translate(0%, 0%); }
+    }
+
+    @keyframes orbit-inner {
+      0%   { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <h1>Today's Habits Complete</h1>
+
+  <div class="outer-orbit">
+    <div class="yellow-circle">
+      <div class="orange-orbit">
+        <div class="orange-circle">
+          <div class="red-orbit">
+            <div class="red-circle"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

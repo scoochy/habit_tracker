@@ -49,8 +49,14 @@ def read_set():
     
 # Route to serve the set.html file
 @app.get("/today", response_class=HTMLResponse)
-def read_set():
+def read_today():
     with open(os.path.join(frontend_path, "today.html"), "r") as f:
+        return HTMLResponse(content=f.read(), status_code=200)
+    
+# Route to serve the complete.html file
+@app.get("/complete", response_class=HTMLResponse)
+def read_complete():
+    with open(os.path.join(frontend_path, "complete.html"), "r") as f:
         return HTMLResponse(content=f.read(), status_code=200)
 
 # Route: Create a new habit
