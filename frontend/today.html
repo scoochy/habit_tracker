@@ -1,0 +1,62 @@
+<!-- frontend/today.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Today's Habits - New Dawn</title>
+  <link rel="stylesheet" href="static/css/styles.css" />
+</head>
+<body class="today-screen">
+  <div class="sunrise" id="habit-container">
+    <!-- Habit items will be injected here -->
+  </div>
+
+  <script>
+    async function loadHabits() {
+      const res = await fetch("http://localhost:8000/habits/");
+      const habits = await res.json();
+      const container = document.getElementById("habit-container");
+
+      const colors = ["ring-outer", "ring-middle", "ring-inner"];
+      container.innerHTML = "";
+
+      habits.forEach((habit, i) => {
+        const ring = document.createElement("div");
+        ring.className = `ring ${colors[i]}`;
+
+        const content = document.createElement("div");
+        content.className = "habit-display";
+        content.innerHTML = `
+          <span>${habit.name}</span>
+          <input type="checkbox" ${habit.completed ? "checked" : ""} onchange="toggleHabit(${habit.id}, this.checked)" />
+        `;
+
+        ring.appendChild(content);
+        container.appendChild(ring);
+      });
+
+      checkAllComplete(habits);
+    }
+
+    async function toggleHabit(id, checked) {
+      if (checked) {
+        await fetch(`http://localhost:8000/habits/${id}/complete`, {
+          method: "POST"
+        });
+      }
+      loadHabits();
+    }
+
+    function checkAllComplete(habits) {
+      if (habits.length > 0 && habits.every(h => h.completed)) {
+        setTimeout(() => {
+          window.location.href = "complete.html";
+        }, 800);
+      }
+    }
+
+    loadHabits();
+  </script>
+</body>
+</html>

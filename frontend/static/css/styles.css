@@ -1,0 +1,112 @@
+/* frontend/css/styles.css */
+body {
+  margin: 0;
+  background-color: black;
+  color: white;
+  font-family: 'Segoe UI', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.sunrise {
+  bottom: 0%;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.ring {
+  position: absolute;
+  border-radius: 50%;
+}
+
+.ring-inner {
+  width: 80%;
+  height: 520px;
+  background-color: #b22222;
+  z-index: 3;
+}
+
+.ring-middle {
+  width: 90%;
+  height: 720px;
+  background-color: #ff8c00;
+  z-index: 2;
+}
+
+.ring-outer {
+  width: 100%;
+  height: 920px;
+  background-color: #ffeb3b;
+  z-index: 1;
+}
+
+.title {
+  position: relative;
+  top: -500px;
+  font-size: 2.5rem;
+}
+
+.enter-button {
+  padding: 0.5em 1em;
+  margin-top: -400px;
+  border: none;
+  border-radius: 20px;
+  background: white;
+  color: black;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.set-screen .habit-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  .set-screen label {
+    color: black;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  
+  .set-screen input {
+    padding: 6px 10px;
+    border-radius: 10px;
+    border: none;
+    font-size: 1rem;
+  }
+  
+  .submit-button {
+    position: absolute;
+    top: 40px;
+    padding: 10px 20px;
+    background-color: white;
+    color: black;
+    font-weight: bold;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+  }
+  .habit-display {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    font-weight: bold;
+    font-size: 1.1rem;
+    width: 100%;
+  }
+  
+  .habit-display input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+  }

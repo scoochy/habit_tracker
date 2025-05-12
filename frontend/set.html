@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Set Habits - New Dawn</title>
+  <link rel="stylesheet" href="/static/css/styles.css?v=2" />
+  <style>
+    .habit-form { display: none; flex-direction: column; align-items: center; }
+    .habit-form.active { display: flex; }
+    .ring { cursor: pointer; }
+  </style>
+</head>
+<body class="set-screen">
+  <div class="sunrise">
+    <div class="ring ring-outer" onclick="openForm('learn')">Learn</div>
+    <div class="ring ring-middle" onclick="openForm('body')">Body</div>
+    <div class="ring ring-inner" onclick="openForm('mind')">Mind</div>
+  </div>
+
+  <div class="habit-form" id="learn-form">
+    <label>Learn</label>
+    <input type="text" id="learn-input" placeholder="What will you learn?" />
+    <button onclick="submitHabit('learn')">Next</button>
+  </div>
+
+  <div class="habit-form" id="body-form">
+    <label>Body</label>
+    <input type="text" id="body-input" placeholder="How will you move?" />
+    <button onclick="submitHabit('body')">Next</button>
+  </div>
+
+  <div class="habit-form" id="mind-form">
+    <label>Mind</label>
+    <input type="text" id="mind-input" placeholder="Journal or meditate?" />
+    <button onclick="submitHabit('mind')">Finish</button>
+  </div>
+
+  <script>
+    const habitOrder = ['learn', 'body', 'mind'];
+    let currentIndex = 0;
+    const submitted = {};
+
+    function openForm(type) {
+      document.querySelectorAll('.habit-form').forEach(form => form.classList.remove('active'));
+      document.getElementById(`${type}-form`).classList.add('active');
+      currentIndex = habitOrder.indexOf(type);
+    }
+
+    async function submitHabit(type) {
+      const input = document.getElementById(`${type}-input`).value.trim();
+      if (!input) return;
+
+      submitted[type] = true;
+
+      await fetch("/habits/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type, name: input })
+      });
+
+      // Move to next habit or redirect
+      currentIndex++;
+      if (currentIndex < habitOrder.length) {
+        openForm(habitOrder[currentIndex]);
+      } else {
+        window.location.href = 'today';  // or '/today' if that's your habits page
+      }
+    }
+  </script>
+</body>
+</html>
