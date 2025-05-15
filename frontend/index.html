@@ -4,27 +4,124 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>New Dawn</title>
-  <link rel="stylesheet" href="/static/css/styles.css">
+    <style>
+      /* General layout */
+    body {
+      margin: 0;
+      background-color: black;
+      color: white;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    .main-header {
+      text-align: center;
+      padding: 1rem;
+    }
+
+    .title {
+      font-size: 2.5rem;
+      margin: 0;
+    }
+
+    .main-content {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      margin-top: 50vh;
+    }
+
+    .footer-text {
+      text-align: center;
+      padding: 1rem;
+      font-size: 1rem;
+      color: #ccc;
+    }
+
+    /* Sunrise rings */
+    .sunrise {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 600px;
+    }
+
+    .ring {
+      position: absolute;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .ring-inner {
+      width: 80%;
+      height: 520px;
+      background-color: #b22222;
+      z-index: 3;
+    }
+
+    .ring-middle {
+      width: 90%;
+      height: 720px;
+      background-color: #ff8c00;
+      z-index: 2;
+    }
+
+    .ring-outer {
+      width: 100%;
+      height: 920px;
+      background-color: #ffeb3b;
+      z-index: 1;
+    }
+
+    /* Button */
+    .enter-button {
+      padding: 0.5em 1.5em;
+      margin-bottom: 20vh;
+      border: none;
+      border-radius: 20px;
+      background: white;
+      color: black;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      z-index: 4;
+    }
 
 
+  </style>
 </head>
 <body class="welcome-screen">
 
-  <h1 class="title">New Dawn</h1>
-  <button class="enter-button" onclick="enterApp()">Enter</button>
+  <header class="main-header">
+    <h1 class="title">New Dawn</h1>
+  </header>
 
-  <div class="sunrise">
-    <div class="ring ring-outer"></div>
-    <div class="ring ring-middle"></div>
-    <div class="ring ring-inner"></div>
-  </div>
+  <main class="main-content">
+    <div class="sunrise">
+      <div class="ring ring-outer"></div>
+      <div class="ring ring-middle"></div>
+      <div class="ring ring-inner">
+        <button class="enter-button" onclick="enterApp()">Enter</button>
+      </div>
+    </div>
+  </main>
 
-  
+  <footer class="footer-text">
+    <!-- Reusable layout area for future messages -->
+    <p>Start your day with intention.</p>
+  </footer>
 
   <script>
-    // Redirect to next screen (set habits or today)
     function enterApp() {
-      // Optional: You could fetch /habits/ and check if habits are already set
       window.location.href = 'set';
     }
   </script>

@@ -1,16 +1,137 @@
-<!-- frontend/today.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Today's Habits - New Dawn</title>
-  <link rel="stylesheet" href="static/css/styles.css" />
+  <style>
+    body {
+      margin: 0;
+      background-color: black;
+      color: white;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    .main-header {
+      text-align: center;
+      padding: 1rem;
+    }
+
+    .title {
+      font-size: 2.5rem;
+      margin: 0;
+    }
+
+    .main-content {
+      flex: 1;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      position: relative;
+      margin-top: 50vh;
+    }
+
+    .sunrise {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 600px;
+    }
+
+    .ring {
+      position: absolute;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+    }
+
+    .ring-inner {
+      width: 80%;
+      height: 520px;
+      background-color: #b22222;
+      z-index: 1;
+    }
+
+    .ring-middle {
+      width: 90%;
+      height: 720px;
+      background-color: #ff8c00;
+      z-index: 0;
+    }
+
+    .ring-outer {
+      width: 100%;
+      height: 920px;
+      background-color: #ffeb3b;
+      z-index: -1;
+    }
+
+    /* Overlayed habit content */
+    .habit-display {
+      position: absolute;
+      z-index: 5;
+      font-weight: bold;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      padding: 0.6rem 1rem;
+      border-radius: 12px;
+      background-color: rgba(0, 0, 0, 0.5);
+      color: white;
+    }
+
+    .habit-display input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+    }
+
+    .habit-outer {
+      top: 15%;
+      transform: translateY(-50%);
+    }
+
+    .habit-middle {
+      top: -2%;
+      transform: translateY(-50%);
+    }
+
+    .habit-inner {
+      top: -17%;
+      transform: translateY(-50%);
+    }
+
+    .footer-text {
+      text-align: center;
+      padding: 1rem;
+      font-size: 1rem;
+      color: #ccc;
+    }
+  </style>
 </head>
 <body class="today-screen">
-  <div class="sunrise" id="habit-container">
-    <!-- Habit items will be injected here -->
-  </div>
+  <header class="main-header">
+    <h1 class="title">Today's Habits</h1>
+  </header>
+
+  <main class="main-content">
+    <div class="sunrise" id="habit-container">
+      <!-- Habit content will be injected here -->
+    </div>
+  </main>
+
+  <footer class="footer-text">
+    You’re doing great. Keep going.
+  </footer>
 
   <script>
     async function loadHabits() {
@@ -18,22 +139,22 @@
       const habits = await res.json();
       const container = document.getElementById("habit-container");
 
-      const colors = ["ring-outer", "ring-middle", "ring-inner"];
+      const ringClasses = ["ring-outer", "ring-middle", "ring-inner"];
+      const habitPositions = ["habit-outer", "habit-middle", "habit-inner"];
       container.innerHTML = "";
 
       habits.forEach((habit, i) => {
         const ring = document.createElement("div");
-        ring.className = `ring ${colors[i]}`;
+        ring.className = `ring ${ringClasses[i]}`;
+        container.appendChild(ring);
 
         const content = document.createElement("div");
-        content.className = "habit-display";
+        content.className = `habit-display ${habitPositions[i]}`;
         content.innerHTML = `
           <span>${habit.name}</span>
           <input type="checkbox" ${habit.completed ? "checked" : ""} onchange="toggleHabit(${habit.id}, this.checked)" />
         `;
-
-        ring.appendChild(content);
-        container.appendChild(ring);
+        container.appendChild(content);
       });
 
       checkAllComplete(habits);
