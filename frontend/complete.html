@@ -5,30 +5,47 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Habits Complete</title>
   <style>
-    body, html {
+    html, body {
       margin: 0;
       padding: 0;
       background: black;
-      color: white;
       font-family: sans-serif;
-      overflow: hidden;
       height: 100vh;
+      overflow: hidden;
     }
 
     h1 {
       text-align: center;
       margin-top: 1.5em;
       font-size: 1.8em;
+      color: white;
+      z-index: 2;
+      position: relative;
+    }
+
+    .quote-layer {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 2em;
+      color: white;
+      opacity: 0.9;
+      width: 80%;
+      text-align: center;
+      z-index: 0;
+      pointer-events: none;
     }
 
     .outer-orbit {
       position: absolute;
       width: 100vw;
-      height: 90vh;
+      height: 80vh;
       animation: move-around 20s linear infinite;
       display: flex;
       justify-content: center;
       align-items: center;
+      z-index: 3;
     }
 
     .yellow-circle {
@@ -60,6 +77,9 @@
       top: 0;
       left: 50%;
       transform: translateX(-50%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
     .red-orbit {
@@ -82,12 +102,11 @@
       transform: translateX(-50%);
     }
 
-    /* Animations */
     @keyframes move-around {
       0%   { transform: translate(0%, 0%); }
-      25%  { transform: translate(20%, 10%); }
+      25%  { transform: translate(40%, 10%); }
       50%  { transform: translate(0%, 20%); }
-      75%  { transform: translate(-20%, 10%); }
+      75%  { transform: translate(-40%, 10%); }
       100% { transform: translate(0%, 0%); }
     }
 
@@ -95,13 +114,27 @@
       0%   { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
+
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
   </style>
 </head>
 <body>
   <h1>Today's Habits Complete</h1>
 
-  <div class="outer-orbit">
-    <div class="yellow-circle">
+  <div class="quote-layer">
+    “Discipline is the bridge between goals and accomplishment.”
+  </div>
+
+  <canvas id="reveal-canvas"></canvas>
+
+  <div class="outer-orbit" id="outer-orbit">
+    <div class="yellow-circle" id="yellow-circle">
       <div class="orange-orbit">
         <div class="orange-circle">
           <div class="red-orbit">
@@ -111,5 +144,36 @@
       </div>
     </div>
   </div>
+
+  <script>
+    const yellow = document.getElementById("yellow-circle");
+    const canvas = document.getElementById("reveal-canvas");
+    const ctx = canvas.getContext("2d");
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      ctx.fillStyle = "black";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+
+    function drawTrail() {
+      const rect = yellow.getBoundingClientRect();
+      const x = rect.left + rect.width / 2;
+      const y = rect.top + rect.height / 2;
+
+      ctx.globalCompositeOperation = "destination-out";
+      ctx.beginPath();
+      ctx.arc(x, y, 100, 0, 2 * Math.PI);  // Brush size
+      ctx.fill();
+      ctx.globalCompositeOperation = "source-over";
+    }
+
+    setInterval(drawTrail, 30); // Leave a trail at ~30fps
+  </script>
 </body>
 </html>
+

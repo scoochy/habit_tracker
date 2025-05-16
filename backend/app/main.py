@@ -56,7 +56,7 @@ def read_today():
 # Route to serve the complete.html file
 @app.get("/complete", response_class=HTMLResponse)
 def read_complete():
-    with open(os.path.join(frontend_path, "complete.html"), "r") as f:
+    with open(os.path.join(frontend_path, "complete.html"), "r", encoding="utf-8") as f:
         return HTMLResponse(content=f.read(), status_code=200)
 
 # Route: Create a new habit

@@ -10,15 +10,14 @@
       background-color: black;
       color: white;
       font-family: 'Segoe UI', sans-serif;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
       overflow: hidden;
     }
 
     .main-header {
       text-align: center;
       padding: 1rem;
+      z-index: 10;
+      position: relative;
     }
 
     .title {
@@ -26,88 +25,38 @@
       margin: 0;
     }
 
-    .main-content {
-      flex: 1;
-      display: flex;
-      align-items: flex-start;
-      justify-content: center;
-      position: relative;
-      margin-top: 50vh;
-    }
-
     .sunrise {
       position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      height: 600px;
+      width: 100vw;
+      height: 80vh;
+      overflow: hidden;
     }
 
-    .ring {
+    .habit-bubble {
       position: absolute;
+      padding: 1rem 1.5rem;
       border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-sizing: border-box;
-    }
-
-    .ring-inner {
-      width: 80%;
-      height: 520px;
-      background-color: #b22222;
-      z-index: 1;
-    }
-
-    .ring-middle {
-      width: 90%;
-      height: 720px;
-      background-color: #ff8c00;
-      z-index: 0;
-    }
-
-    .ring-outer {
-      width: 100%;
-      height: 920px;
-      background-color: #ffeb3b;
-      z-index: -1;
-    }
-
-    /* Overlayed habit content */
-    .habit-display {
-      position: absolute;
-      z-index: 5;
-      font-weight: bold;
-      font-size: 1.2rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 1rem;
-      padding: 0.6rem 1rem;
-      border-radius: 12px;
-      background-color: rgba(0, 0, 0, 0.5);
       color: white;
+      font-weight: bold;
+      cursor: pointer;
+      user-select: none;
+      text-align: center;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+      transition: transform 0.2s;
+      white-space: nowrap;
     }
 
-    .habit-display input[type="checkbox"] {
-      width: 20px;
-      height: 20px;
+    .habit-learn {
+      background-color: #ffeb3b;
+      color: black;
     }
 
-    .habit-outer {
-      top: 15%;
-      transform: translateY(-50%);
+    .habit-body {
+      background-color: #ff8c00;
     }
 
-    .habit-middle {
-      top: -2%;
-      transform: translateY(-50%);
-    }
-
-    .habit-inner {
-      top: -17%;
-      transform: translateY(-50%);
+    .habit-mind {
+      background-color: #b22222;
     }
 
     .footer-text {
@@ -115,58 +64,99 @@
       padding: 1rem;
       font-size: 1rem;
       color: #ccc;
+      z-index: 10;
+      position: relative;
     }
   </style>
 </head>
-<body class="today-screen">
+<body>
   <header class="main-header">
     <h1 class="title">Today's Habits</h1>
   </header>
 
-  <main class="main-content">
-    <div class="sunrise" id="habit-container">
-      <!-- Habit content will be injected here -->
-    </div>
-  </main>
+  <main class="sunrise" id="habit-container"></main>
 
   <footer class="footer-text">
-    You’re doing great. Keep going.
+    You are doing great. Keep going.
   </footer>
 
   <script>
+    const colorMap = {
+      "Learn": "habit-learn",
+      "Body": "habit-body",
+      "Mind": "habit-mind"
+    };
+
+    function getClassFromType(type) {
+      type = type.toLowerCase();
+      if (type.includes("learn")) return "habit-learn";
+      if (type.includes("body")) return "habit-body";
+      if (type.includes("mind")) return "habit-mind";
+      return "habit-body";
+    }
+
     async function loadHabits() {
       const res = await fetch("http://localhost:8000/habits/");
-      const habits = await res.json();
-      const container = document.getElementById("habit-container");
+      let habits = await res.json();
+      // habits = habits.filter(h => !h.completed); // optional
 
-      const ringClasses = ["ring-outer", "ring-middle", "ring-inner"];
-      const habitPositions = ["habit-outer", "habit-middle", "habit-inner"];
+      const container = document.getElementById("habit-container");
       container.innerHTML = "";
 
-      habits.forEach((habit, i) => {
-        const ring = document.createElement("div");
-        ring.className = `ring ${ringClasses[i]}`;
-        container.appendChild(ring);
+      habits.forEach(habit => {
+        const bubble = document.createElement("div");
+        bubble.className = `habit-bubble ${getClassFromType(habit.type)}`;
+        bubble.textContent = habit.name;
 
-        const content = document.createElement("div");
-        content.className = `habit-display ${habitPositions[i]}`;
-        content.innerHTML = `
-          <span>${habit.name}</span>
-          <input type="checkbox" ${habit.completed ? "checked" : ""} onchange="toggleHabit(${habit.id}, this.checked)" />
-        `;
-        container.appendChild(content);
+        // Initial position
+        const x = Math.random() * (window.innerWidth - 200);
+        const y = Math.random() * (window.innerHeight - 300);
+        bubble.style.left = `${x}px`;
+        bubble.style.top = `${y}px`;
+
+        // Click = mark complete
+        bubble.onclick = async () => {
+          await fetch(`http://localhost:8000/habits/${habit.id}/complete`, {
+            method: "POST"
+          });
+          loadHabits();
+        };
+
+        container.appendChild(bubble);
+
+        // Animate
+        animateBubble(bubble);
       });
 
       checkAllComplete(habits);
     }
 
-    async function toggleHabit(id, checked) {
-      if (checked) {
-        await fetch(`http://localhost:8000/habits/${id}/complete`, {
-          method: "POST"
-        });
+    function animateBubble(bubble) {
+      const bounds = {
+        width: window.innerWidth - 200,
+        height: window.innerHeight - 300
+      };
+
+      let x = parseFloat(bubble.style.left);
+      let y = parseFloat(bubble.style.top);
+      let vx = (Math.random() - 0.5) * 2.6; // random velocity
+      let vy = (Math.random() - 0.5) * 2.6;
+
+      function move() {
+        x += vx;
+        y += vy;
+
+        // Bounce off edges
+        if (x <= 0 || x >= bounds.width) vx *= -1;
+        if (y <= 0 || y >= bounds.height) vy *= -1;
+
+        bubble.style.left = `${x}px`;
+        bubble.style.top = `${y}px`;
+
+        requestAnimationFrame(move);
       }
-      loadHabits();
+
+      move();
     }
 
     function checkAllComplete(habits) {
@@ -181,3 +171,4 @@
   </script>
 </body>
 </html>
+
