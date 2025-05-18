@@ -124,7 +124,7 @@
       pointer-events: none;
     }
 
-    h3 {
+    .day-label {
       text-align: center;
     }
   </style>
@@ -144,7 +144,7 @@
         <div class="orange-circle">
           <div class="red-orbit">
             <div class="red-circle">
-              <h3> Day 1</h3>
+              <h2 id="day-count" class="day-label"></h2>
             </div>
           </div>
         </div>
@@ -180,6 +180,26 @@
     }
 
     setInterval(drawTrail, 30); // Leave a trail at ~30fps
+
+    async function showDayNumber() {
+      const userId = localStorage.getItem("habit_user_id");
+      const res = await fetch(`/habits/start-date?user_id=${userId}`);
+      const { start_date } = await res.json();
+
+      if (start_date) {
+        const start = new Date(start_date);
+        const today = new Date();
+        const diffTime = today - start;
+        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
+
+        document.getElementById("day-count").textContent = `Day ${diffDays}`;
+      } else {
+        document.getElementById("day-count").textContent = "Day 1";
+      }
+    }
+
+    showDayNumber();
+
   </script>
 </body>
 </html>

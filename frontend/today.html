@@ -111,7 +111,9 @@
     let activeBubbles = [];
 
     async function loadHabits() {
-      const res = await fetch("http://localhost:8000/habits/");
+      const userId = localStorage.getItem("habit_user_id");
+
+      const res = await fetch(`http://localhost:8000/habits/?user_id=${userId}`);
       let allHabits = await res.json();
       const habits = allHabits.filter(h => !h.completed);
 
@@ -145,13 +147,13 @@
         activeBubbles.push(bubbleObj);
 
         bubble.onclick = async () => {
-          await fetch(`http://localhost:8000/habits/${habit.id}/complete`, {
+          await fetch(`http://localhost:8000/habits/${habit.id}/complete?user_id=${userId}`, {
             method: "POST"
           });
           loadHabits();
         };
       });
-      
+
       checkAllComplete(allHabits);
 
       animateBubbles();
