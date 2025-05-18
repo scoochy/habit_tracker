@@ -34,29 +34,42 @@
 
     .habit-bubble {
       position: absolute;
-      padding: 1rem 1.5rem;
+      padding: 1.2rem 1.6rem;
       border-radius: 50%;
       color: white;
-      font-weight: bold;
+      font-weight: 600;
       cursor: pointer;
       user-select: none;
       text-align: center;
-      box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
-      transition: transform 0.2s;
+      box-shadow:
+        0 4px 8px rgba(0, 0, 0, 0.3),
+        inset 0 -3px 6px rgba(255, 255, 255, 0.1),
+        inset 0 3px 6px rgba(255, 255, 255, 0.05);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
       white-space: nowrap;
+      font-size: 1.2rem;
+      backdrop-filter: blur(2px);
+    }
+
+    .habit-bubble:hover {
+      transform: scale(1.1);
+      box-shadow:
+        0 6px 12px rgba(0, 0, 0, 0.4),
+        inset 0 -4px 8px rgba(255, 255, 255, 0.2),
+        inset 0 4px 8px rgba(255, 255, 255, 0.1);
     }
 
     .habit-learn {
-      background-color: #ffeb3b;
-      color: black;
+      background: radial-gradient(circle at 30% 30%, #fff176, #fbc02d);
+      color: #212121;
     }
 
     .habit-body {
-      background-color: #ff8c00;
+      background: radial-gradient(circle at 30% 30%, #ffa726, #fb8c00);
     }
 
     .habit-mind {
-      background-color: #b22222;
+      background: radial-gradient(circle at 30% 30%, #e57373, #c62828);
     }
 
     .footer-text {
@@ -95,69 +108,107 @@
       return "habit-body";
     }
 
+    let activeBubbles = [];
+
     async function loadHabits() {
       const res = await fetch("http://localhost:8000/habits/");
-      let habits = await res.json();
-      // habits = habits.filter(h => !h.completed); // optional
+      let allHabits = await res.json();
+      const habits = allHabits.filter(h => !h.completed);
+
 
       const container = document.getElementById("habit-container");
       container.innerHTML = "";
+      activeBubbles = [];
 
       habits.forEach(habit => {
         const bubble = document.createElement("div");
         bubble.className = `habit-bubble ${getClassFromType(habit.type)}`;
         bubble.textContent = habit.name;
 
-        // Initial position
+        // Initial position and velocity
         const x = Math.random() * (window.innerWidth - 200);
         const y = Math.random() * (window.innerHeight - 300);
         bubble.style.left = `${x}px`;
         bubble.style.top = `${y}px`;
 
-        // Click = mark complete
+        container.appendChild(bubble);
+
+        const bubbleObj = {
+          el: bubble,
+          x,
+          y,
+          vx: (Math.random() - 0.5) * 2.6,
+          vy: (Math.random() - 0.5) * 2.6,
+          radius: bubble.offsetWidth / 2
+        };
+
+        activeBubbles.push(bubbleObj);
+
         bubble.onclick = async () => {
           await fetch(`http://localhost:8000/habits/${habit.id}/complete`, {
             method: "POST"
           });
           loadHabits();
         };
-
-        container.appendChild(bubble);
-
-        // Animate
-        animateBubble(bubble);
       });
+      
+      checkAllComplete(allHabits);
 
-      checkAllComplete(habits);
+      animateBubbles();
     }
 
-    function animateBubble(bubble) {
+    function animateBubbles() {
       const bounds = {
         width: window.innerWidth - 200,
-        height: window.innerHeight - 300
+        height: window.innerHeight - 300,
       };
 
-      let x = parseFloat(bubble.style.left);
-      let y = parseFloat(bubble.style.top);
-      let vx = (Math.random() - 0.5) * 2.6; // random velocity
-      let vy = (Math.random() - 0.5) * 2.6;
-
       function move() {
-        x += vx;
-        y += vy;
+        activeBubbles.forEach((b1, i) => {
+          // Move the bubble
+          b1.x += b1.vx;
+          b1.y += b1.vy;
 
-        // Bounce off edges
-        if (x <= 0 || x >= bounds.width) vx *= -1;
-        if (y <= 0 || y >= bounds.height) vy *= -1;
+          // Bounce off walls
+          if (b1.x <= 0 || b1.x + b1.el.offsetWidth >= bounds.width) b1.vx *= -1;
+          if (b1.y <= 0 || b1.y + b1.el.offsetHeight >= bounds.height) b1.vy *= -1;
 
-        bubble.style.left = `${x}px`;
-        bubble.style.top = `${y}px`;
+          // Check collisions with other bubbles
+          for (let j = i + 1; j < activeBubbles.length; j++) {
+            const b2 = activeBubbles[j];
+            const dx = b1.x - b2.x;
+            const dy = b1.y - b2.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            const minDist = (b1.radius + b2.radius) * 0.6;
+
+            if (distance < minDist) {
+              // Simple velocity swap (elastic bounce)
+              [b1.vx, b2.vx] = [b2.vx, b1.vx];
+              [b1.vy, b2.vy] = [b2.vy, b1.vy];
+
+              // Separate them to prevent sticking
+              const overlap = minDist - distance;
+              const angle = Math.atan2(dy, dx);
+              const moveX = (Math.cos(angle) * overlap) / 2;
+              const moveY = (Math.sin(angle) * overlap) / 2;
+              b1.x += moveX;
+              b1.y += moveY;
+              b2.x -= moveX;
+              b2.y -= moveY;
+            }
+          }
+
+          // Apply new positions
+          b1.el.style.left = `${b1.x}px`;
+          b1.el.style.top = `${b1.y}px`;
+        });
 
         requestAnimationFrame(move);
       }
 
       move();
     }
+
 
     function checkAllComplete(habits) {
       if (habits.length > 0 && habits.every(h => h.completed)) {
