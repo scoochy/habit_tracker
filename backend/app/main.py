@@ -6,14 +6,13 @@ from sqlalchemy.orm import Session
 from datetime import date
 from . import models, schemas, crud
 from . database import engine, SessionLocal
-from pathlib import Path
 
 
 import os
 
 models.Base.metadata.create_all(bind=engine)
 
-frontend_path = os.path.join(Path.home(), 'frontend')
+frontend_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../frontend")
 
 app = FastAPI(debug=True)
 
