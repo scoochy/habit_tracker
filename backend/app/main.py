@@ -12,7 +12,8 @@ import os
 
 models.Base.metadata.create_all(bind=engine)
 
-frontend_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../frontend")
+# Use absolute path to frontend (verified location)
+frontend_path = "/home/mnc09fzdjlsw/new_dawn/frontend"
 
 app = FastAPI(debug=True)
 
