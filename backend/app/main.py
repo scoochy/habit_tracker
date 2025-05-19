@@ -4,7 +4,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from datetime import date
-import models, schemas, crud
+from . import models, schemas, crud
 from database import engine, SessionLocal
 
 
