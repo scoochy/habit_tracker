@@ -200,6 +200,27 @@
 
     showDayNumber();
 
+      // 🚀 Auto-redirect after midnight
+    function getMidnightDelay() {
+      const now = new Date();
+      const midnight = new Date();
+      midnight.setHours(24, 0, 0, 0); // Next midnight
+      return midnight - now;
+    }
+
+    setTimeout(() => {
+      window.location.href = "/";
+    }, getMidnightDelay());
+
+    // 🧠 Extra check on tab wake or focus
+    const todayStr = new Date().toISOString().split("T")[0];
+    window.addEventListener("focus", () => {
+      const nowStr = new Date().toISOString().split("T")[0];
+      if (nowStr !== todayStr) {
+        window.location.href = "/";
+      }
+    });
+
   </script>
 </body>
 </html>
