@@ -37,9 +37,11 @@ def get_db():
 # Serve static files (like CSS, JS, images) from the frontend folder
 app.mount("/static", StaticFiles(directory=os.path.join(frontend_path, "static")), name="static")
 
-@app.get("/")
-def read_root():
-    return {"status": "OK", "debug": True}
+# Route to serve the index.html file
+@app.get("/", response_class=HTMLResponse)
+def read_index():
+    with open(os.path.join(frontend_path, "index.html"), "r") as f:
+        return HTMLResponse(content=f.read(), status_code=200)
     
 # Route to serve the set.html file
 @app.get("/set", response_class=HTMLResponse)
