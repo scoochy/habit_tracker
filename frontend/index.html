@@ -121,51 +121,9 @@
   </footer>
 
   <script>
-  document.addEventListener("DOMContentLoaded", async () => {
-    const userId = getUserId();
-    const todayStr = new Date().toISOString().split("T")[0];
-
-    // Reset habits if not already done today
-    const lastReset = localStorage.getItem("habit_last_reset");
-    if (lastReset !== todayStr) {
-      try {
-        await fetch(`/habits/reset?user_id=${userId}`, { method: "POST" });
-        localStorage.setItem("habit_last_reset", todayStr);
-      } catch (err) {
-        console.error("Habit reset failed:", err);
-      }
+    function enterApp() {
+      window.location.href = 'set';
     }
-  });
-
-  async function enterApp() {
-    const userId = getUserId();
-
-    // Check if the user has any habits at all
-    try {
-      const res = await fetch(`/habits/?user_id=${userId}`);
-      const habits = await res.json();
-
-      if (habits.length === 0) {
-        window.location.href = "/set";
-      } else {
-        window.location.href = "/today";
-      }
-    } catch (err) {
-      console.error("Failed to load habits:", err);
-      // Fallback route
-      window.location.href = "/set";
-    }
-  }
-
-  function getUserId() {
-    let userId = localStorage.getItem("habit_user_id");
-    if (!userId) {
-      userId = crypto.randomUUID();
-      localStorage.setItem("habit_user_id", userId);
-    }
-    return userId;
-  }
-</script>
-
+  </script>
 </body>
 </html>

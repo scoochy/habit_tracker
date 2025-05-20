@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, Query
+from fastapi import FastAPI, Depends
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
@@ -6,8 +6,12 @@ from sqlalchemy.orm import Session
 from datetime import date
 import models, schemas, crud
 from database import engine, SessionLocal
+<<<<<<< HEAD
 
 
+=======
+from models import Habit
+>>>>>>> parent of 7185dd1 (basic ux flow, will add edge cases later)
 import os
 
 models.Base.metadata.create_all(bind=engine)
@@ -66,23 +70,12 @@ def read_complete():
 def create_habit(habit: schemas.HabitCreate, db: Session = Depends(get_db)):
     return crud.upsert_habit(db, habit)
 
-# Get today's habits
+# Route: Get today’s habits
 @app.get("/habits/", response_model=list[schemas.HabitOut])
-def read_today_habits(user_id: str = Query(...), db: Session = Depends(get_db)):
-    return crud.get_today_habits_for_user(db, user_id, date.today())
+def read_today_habits(db: Session = Depends(get_db)):
+    return crud.get_today_habits(db, date.today())
 
-#MArk habit as completed
+# Route: Mark a habit as completed
 @app.post("/habits/{habit_id}/complete", response_model=schemas.HabitOut)
-def complete_habit(habit_id: int, user_id: str = Query(...), db: Session = Depends(get_db)):
-    return crud.complete_habit(db, habit_id, user_id)
-
-#reset habits
-@app.post("/habits/reset", response_model=list[schemas.HabitOut])
-def reset_daily_habits(user_id: str = Query(...), db: Session = Depends(get_db)):
-    return crud.reset_habits_for_today(db, user_id)
-
-#habit start date
-@app.get("/habits/start-date")
-def get_habit_start_date(user_id: str = Query(...), db: Session = Depends(get_db)):
-    start_date = crud.get_start_date(db, user_id)
-    return {"start_date": start_date}
+def complete_habit(habit_id: int, db: Session = Depends(get_db)):
+    return crud.complete_habit(db, habit_id)

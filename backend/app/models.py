@@ -18,4 +18,3 @@ class Habit(Base):
     type = Column(SqlEnum(HabitType), unique=True, nullable=False)  # Enum: one unique habit per type
     completed = Column(Boolean, default=False)  # Tracks if the habit is completed for the day
     date = Column(Date)  # Date associated with the habit (typically today)
-    user_id = Column(String, index=True)

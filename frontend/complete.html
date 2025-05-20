@@ -124,7 +124,7 @@
       pointer-events: none;
     }
 
-    .day-label {
+    h3 {
       text-align: center;
     }
   </style>
@@ -144,7 +144,7 @@
         <div class="orange-circle">
           <div class="red-orbit">
             <div class="red-circle">
-              <h2 id="day-count" class="day-label"></h2>
+              <h3> Day 1</h3>
             </div>
           </div>
         </div>
@@ -180,6 +180,7 @@
     }
 
     setInterval(drawTrail, 30); // Leave a trail at ~30fps
+<<<<<<< HEAD
 
     async function showDayNumber() {
       const userId = localStorage.getItem("habit_user_id");
@@ -221,6 +222,8 @@
       }
     });
 
+=======
+>>>>>>> parent of 7185dd1 (basic ux flow, will add edge cases later)
   </script>
 </body>
 </html>

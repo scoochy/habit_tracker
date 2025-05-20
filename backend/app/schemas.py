@@ -6,7 +6,6 @@ from datetime import date
 class HabitBase(BaseModel):
     name: str # Name of the habit (E.g "Meditate")
     type: Literal["body", "mind", "learn"] # Category of the habit, can only be 1 of the 3 defined
-    user_id: str
 
 # Schema for creating a new habit (request body for POST endpoints)
 class HabitCreate(HabitBase):
