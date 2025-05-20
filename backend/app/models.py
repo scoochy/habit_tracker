@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, Boolean, Date
 from sqlalchemy import Enum as SqlEnum  # SQLAlchemy Enum type (aliased to avoid conflict with Python's Enum)
 from enum import Enum  # Python's standard Enum for defining fixed choices
-from . database import Base  # Base class for SQLAlchemy models (from your database setup)
+from  database import Base  # Base class for SQLAlchemy models (from your database setup)
 
 # Define valid habit categories using Python Enum
 class HabitType(str, Enum):
