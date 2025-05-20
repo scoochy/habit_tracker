@@ -124,7 +124,7 @@
       pointer-events: none;
     }
 
-    h3 {
+    .day-label {
       text-align: center;
     }
   </style>
@@ -144,7 +144,7 @@
         <div class="orange-circle">
           <div class="red-orbit">
             <div class="red-circle">
-              <h3> Day 1</h3>
+              <h2 id="day-count" class="day-label"></h2>
             </div>
           </div>
         </div>
@@ -180,7 +180,6 @@
     }
 
     setInterval(drawTrail, 30); // Leave a trail at ~30fps
-<<<<<<< HEAD
 
     async function showDayNumber() {
       const userId = localStorage.getItem("habit_user_id");
@@ -201,29 +200,6 @@
 
     showDayNumber();
 
-      // 🚀 Auto-redirect after midnight
-    function getMidnightDelay() {
-      const now = new Date();
-      const midnight = new Date();
-      midnight.setHours(24, 0, 0, 0); // Next midnight
-      return midnight - now;
-    }
-
-    setTimeout(() => {
-      window.location.href = "/";
-    }, getMidnightDelay());
-
-    // 🧠 Extra check on tab wake or focus
-    const todayStr = new Date().toISOString().split("T")[0];
-    window.addEventListener("focus", () => {
-      const nowStr = new Date().toISOString().split("T")[0];
-      if (nowStr !== todayStr) {
-        window.location.href = "/";
-      }
-    });
-
-=======
->>>>>>> parent of 7185dd1 (basic ux flow, will add edge cases later)
   </script>
 </body>
 </html>
